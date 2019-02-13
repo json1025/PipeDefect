@@ -33,6 +33,7 @@ class DataTransformation:
 
             # for i in range(len(data_row)-last_index):
 
+
     def add_row(self, first_index, length):
         self.proc_data.append([])
         for i in range(length):
