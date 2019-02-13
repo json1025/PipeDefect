@@ -5,19 +5,18 @@
 class DataTransformation:
     location_indices = []
 
-    def __init__(self, data_row, location_row, proc_data_row_length, shift):
+    def __init__(self, data_row, proc_data_row_length, shift):
         self.data_row = data_row
         self.proc_data_row_length = proc_data_row_length
         self.shift = shift
         self.proc_data = []
-        self.find_location_indices(location_row)
 
-    def find_location_indices(self, location_row):
+    @staticmethod
+    def initialize_location_indices(self, location_row):
         self.location_indices.append(location_row[0])
         for i in range(len(location_row)-1):
             if location_row[i] != location_row[i+1]:
                 self.location_indices.append(i+1)
-        return self.location_indices
 
     def process_data(self):
         first_index = 1

@@ -3,7 +3,6 @@ import csv
 
 def read_file(file):
     data = []
-
     with open(file, 'r') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         write_headers = True
