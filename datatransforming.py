@@ -1,44 +1,40 @@
-# proc_data_row_length = 100
-# shift = 10
-
-
 class DataTransformation:
-    location_indices = []
+    LOCATIONS = {}  # key: location   value: (starting index, ending index)
+    FINAL_DATA_ROW_LENGTH = 100
+    SHIFT = 10
 
-    def __init__(self, data_row, proc_data_row_length, shift):
+    def __init__(self, data_row):
         self.data_row = data_row
-        self.proc_data_row_length = proc_data_row_length
-        self.shift = shift
-        self.proc_data = []
+        self.final_data = []
 
-    @staticmethod
-    def initialize_location_indices(self, location_row):
-        self.location_indices.append(location_row[0])
-        for i in range(len(location_row)-1):
-            if location_row[i] != location_row[i+1]:
-                self.location_indices.append(i+1)
+    @classmethod
+    def init_locations(cls, loc_row):
+        temp = []
+        for i, location in enumerate(loc_row):
+            if i == 0:  # skips the header
+                continue
+            if location != loc_row[i-1]:
+                cls.LOCATIONS[float(location)] = None
+                temp.append(i)
+        temp.append(len(loc_row))
+        i = 1
+        for location in cls.LOCATIONS:
+            cls.LOCATIONS[location] = (temp[i-1], temp[i])  # (starting index, ending index)
+            i += 1
 
     def process_data(self):
-        first_index = 1
-        last_index = first_index + self.proc_data_row_length - 1
+        for location, indices in self.LOCATIONS.items():
+            first_index = indices[0]
+            last_index = first_index + self.FINAL_DATA_ROW_LENGTH - 1
+            while last_index < indices[1]:
+                self.add_row(first_index, self.FINAL_DATA_ROW_LENGTH, location)
+                first_index += self.SHIFT
+                last_index += self.SHIFT
+            if first_index < last_index:
+                self.add_row(first_index, indices[1]-first_index, location)
 
-        while last_index < len(self.data_row):
-            self.add_row(first_index, self.proc_data_row_length)
-            # self.add_location_to_row(self.location_row)
-            first_index += self.shift
-            last_index += self.shift
-        if last_index >= len(self.data_row):
-            self.proc_data.append([])
-            last_index -= self.shift
-
-            # for i in range(len(data_row)-last_index):
-
-
-    def add_row(self, first_index, length):
-        self.proc_data.append([])
+    def add_row(self, first_index, length, loc):
+        self.final_data.append([])
         for i in range(length):
-            self.proc_data[-1].append(self.data_row[i + first_index])
-        self.add_location()
-
-    def add_location(self):
-        self.proc_data[-1].append()
+            self.final_data[-1].append(self.data_row[i + first_index])
+        self.final_data[-1].append(loc)

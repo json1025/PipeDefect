@@ -23,5 +23,5 @@ def write_file(destination_file, data):
     with open(destination_file, 'w') as new_file:
         for row in data:
             for value in row:
-                new_file.write(value + ',')
+                new_file.write(str(value) + ',')
             new_file.write('\n')
